@@ -282,6 +282,20 @@
             filter: invert(0.8);
             cursor: pointer;
         }
+        .campo .data-wrapper {
+            position: relative;
+        }
+        .campo .data-wrapper i {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+        .campo input[type="date"] {
+            padding-right: 44px;
+        }
 
         .btn-gerar {
             width: 100%;
@@ -342,6 +356,7 @@
             border-left: 4px solid var(--blue);
             line-height: 1.6;
             color: var(--text);
+            white-space: pre-wrap;
         }
         .btn-whatsapp {
             width: 100%;
@@ -365,7 +380,7 @@
             box-shadow: 0 6px 24px rgba(37, 211, 102, 0.4);
         }
 
-        /* ========== LOCALIZAÇÃO ========== */
+        /* ========== LOCALIZAÇÃO E IMAGEM ========== */
         .localizacao {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -393,6 +408,36 @@
             font-weight: 600;
             font-size: 1.05rem;
             margin-top: 4px;
+            margin-bottom: 16px;
+        }
+        .localizacao .map-image {
+            width: 100%;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .localizacao .map-image:hover {
+            border-color: var(--blue);
+            box-shadow: 0 0 20px rgba(74, 158, 255, 0.1);
+        }
+        .localizacao .map-image img {
+            display: block;
+            width: 100%;
+            height: auto;
+            max-height: 360px;
+            object-fit: cover;
+        }
+        .localizacao .info-extra {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .localizacao .info-extra i {
+            color: var(--blue);
         }
 
         /* ========== CONTATO RÁPIDO ========== */
@@ -483,6 +528,9 @@
             .logo h1 {
                 font-size: 1.5rem;
             }
+            .localizacao .map-image img {
+                max-height: 220px;
+            }
         }
         @media (min-width: 800px) {
             .container {
@@ -493,6 +541,9 @@
             }
             .grid-servicos {
                 grid-template-columns: repeat(4, 1fr);
+            }
+            .localizacao .map-image img {
+                max-height: 400px;
             }
         }
 
@@ -582,10 +633,13 @@
                 </div>
                 <div class="campo">
                     <label for="data">Data do agendamento</label>
-                    <input type="date" id="data" required />
+                    <div class="data-wrapper">
+                        <input type="date" id="data" required />
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
                 </div>
                 <button type="submit" class="btn-gerar">
-                    <i class="fas fa-paper-plane"></i> Gerar mensagem e agendar
+                    <i class="fas fa-paper-plane"></i> Gerar mensagem com horários disponíveis
                 </button>
             </form>
 
@@ -599,13 +653,22 @@
             </div>
         </section>
 
-        <!-- ===== LOCALIZAÇÃO ===== -->
+        <!-- ===== LOCALIZAÇÃO COM IMAGEM ===== -->
         <section class="localizacao" id="localizacao">
             <h3><i class="fas fa-map-pin"></i> Onde estamos</h3>
             <p>Estamos localizados em:</p>
             <div class="endereco">
                 <i class="fas fa-location-dot" style="color:var(--gold);"></i>
-                Igarapé – MG, Bairro Cidade Nova, Rua Antônio Cândido, s/n
+                Igarapé – MG, Bairro Cidade Nova, Rua Antônio Cândido
+            </div>
+            <!-- IMAGEM DA LOCALIZAÇÃO (1280x720) -->
+            <div class="map-image">
+                <img src="1fd7c987-aa6c-47f5-8452-5778772ee436.png" 
+                     alt="Localização da Lava Jato do Fred - Igarapé MG" 
+                     loading="lazy" />
+            </div>
+            <div class="info-extra">
+                <i class="fas fa-info-circle"></i> Enfrente a barbearia do João.
             </div>
         </section>
 
@@ -630,13 +693,12 @@
                 <a href="https://www.instagram.com/fred_angelo7/" target="_blank" aria-label="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <!-- WhatsApp sem link específico, apenas ícone (pode ser usado para abrir o WhatsApp) -->
                 <a href="#" onclick="abrirWhatsApp()" aria-label="WhatsApp">
                     <i class="fab fa-whatsapp"></i>
                 </a>
             </div>
             <div class="endereco-rodape">
-                <i class="fas fa-map-pin"></i> Igarapé – MG, Bairro Cidade Nova, Rua Antônio Cândido, s/n
+                <i class="fas fa-map-pin"></i> Igarapé – MG, Bairro Cidade Nova, Rua Antônio Cândido
             </div>
             <small><i class="fas fa-phone"></i> (31) 97161-0993</small>
         </footer>
@@ -663,7 +725,8 @@
 
             // --- DATA MÍNIMA (HOJE) ---
             const hoje = new Date().toISOString().split('T')[0];
-            document.getElementById('data').setAttribute('min', hoje);
+            const inputData = document.getElementById('data');
+            if (inputData) inputData.setAttribute('min', hoje);
 
             // --- FUNÇÃO PARA ROLAR ATÉ O FORM ---
             window.scrollToAgendamento = function() {
@@ -673,7 +736,13 @@
             // --- VARIÁVEL GLOBAL PARA MENSAGEM ---
             let mensagemPronta = '';
 
-            // --- GERAR MENSAGEM ---
+            // --- LISTA DE HORÁRIOS DISPONÍVEIS (fixos) ---
+            const horariosDisponiveis = [
+                '08:00', '09:00', '10:00', '11:00', '12:00',
+                '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
+            ];
+
+            // --- GERAR MENSAGEM COM DATA E HORÁRIOS DISPONÍVEIS ---
             window.gerarMensagem = function(e) {
                 e.preventDefault();
 
@@ -697,11 +766,15 @@
                 else if (hora < 18) saudacao = 'Boa tarde';
                 else saudacao = 'Boa noite';
 
-                // Construir mensagem (sem horário)
+                // Construir mensagem com a lista de horários
                 let msg = saudacao + '! ';
                 if (nome) msg += 'Meu nome é ' + nome + '. ';
-                msg += 'Gostaria de agendar um horário para o dia ' + dataFormatada + '. ';
-                msg += 'Aguardo a confirmação. Atenciosamente.';
+                msg += 'Gostaria de agendar para o dia ' + dataFormatada + '.\n\n';
+                msg += 'Horários disponíveis para este dia:\n';
+                horariosDisponiveis.forEach(h => {
+                    msg += '• ' + h + '\n';
+                });
+                msg += '\nQual horário você confirma para mim? Aguardo sua resposta. Atenciosamente.';
 
                 mensagemPronta = msg;
 
@@ -716,7 +789,7 @@
             // --- ENVIAR VIA WHATSAPP ---
             window.enviarWhatsApp = function() {
                 if (!mensagemPronta) {
-                    alert('Primeiro gere a mensagem clicando em "Gerar mensagem e agendar".');
+                    alert('Primeiro gere a mensagem clicando em "Gerar mensagem com horários disponíveis".');
                     return;
                 }
                 const telefone = '5531971610993';
@@ -724,14 +797,11 @@
                 window.open('https://wa.me/' + telefone + '?text=' + texto, '_blank');
             };
 
-            // --- ABRIR WHATSAPP PELO ÍCONE DO RODAPÉ (sem mensagem pré-definida) ---
+            // --- ABRIR WHATSAPP PELO ÍCONE DO RODAPÉ ---
             window.abrirWhatsApp = function() {
                 const telefone = '5531971610993';
                 window.open('https://wa.me/' + telefone, '_blank');
             };
-
-            // --- REDES SOCIAIS (placeholder para o Instagram já tem link) ---
-            // O link do Instagram já está definido no HTML.
 
             // --- SCROLL SUAVE PARA ÂNCORAS ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -746,7 +816,7 @@
                 });
             });
 
-            console.log('🚗 Lava Jato do Fred – Agendamento simplificado.');
+            console.log('🚗 Lava Jato do Fred – Agendamento com imagem e referência.');
         })();
     </script>
 </body>
