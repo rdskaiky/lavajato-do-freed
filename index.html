@@ -42,12 +42,15 @@
             justify-content: center;
             align-items: flex-start;
             padding-top: 30px;
+            overflow-x: hidden;
+            /* corrige overflow horizontal */;
         }
 
         .container {
             max-width: 680px;
             width: 100%;
             margin: 0 auto;
+            overflow-x: hidden;
         }
 
         /* ========== HEADER ========== */
@@ -150,9 +153,15 @@
             animation: floatGlow 4s ease-in-out infinite;
         }
         @keyframes floatGlow {
-            0% { box-shadow: 0 0 0 0 rgba(74, 158, 255, 0.15); }
-            50% { box-shadow: 0 0 30px 8px rgba(74, 158, 255, 0.05); }
-            100% { box-shadow: 0 0 0 0 rgba(74, 158, 255, 0.15); }
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 158, 255, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 30px 8px rgba(74, 158, 255, 0.05);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 158, 255, 0.15);
+            }
         }
         .hero h2 {
             font-size: 2rem;
@@ -333,8 +342,14 @@
             display: block;
         }
         @keyframes fadeUp {
-            0% { opacity: 0; transform: translateY(16px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .mensagem-box .label-msg {
             font-size: 0.7rem;
@@ -513,6 +528,99 @@
             margin-top: 4px;
         }
 
+        /* ========== BOTÃO FLUTUANTE WHATSAPP ========== */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 999;
+            width: 64px;
+            height: 64px;
+            background-color: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            animation: pulse-whatsapp 2s infinite;
+            text-decoration: none;
+        }
+        .whatsapp-float:hover {
+            transform: scale(1.12);
+            box-shadow: 0 8px 40px rgba(37, 211, 102, 0.7);
+        }
+        @keyframes pulse-whatsapp {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.06);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .whatsapp-float i {
+            pointer-events: none;
+        }
+
+        /* ========== OVERLAY DE CARREGAMENTO ========== */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 14, 20, 0.92);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 24px;
+            backdrop-filter: blur(6px);
+            animation: fadeInOverlay 0.3s ease;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        @keyframes fadeInOverlay {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        .loading-overlay .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid var(--border);
+            border-top-color: #25D366;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-overlay .texto-loading {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+        .loading-overlay .texto-loading i {
+            color: #25D366;
+            margin-right: 8px;
+        }
+
         /* ========== RESPONSIVO ========== */
         @media (max-width: 480px) {
             .hero h2 {
@@ -531,6 +639,13 @@
             .localizacao .map-image img {
                 max-height: 220px;
             }
+            .whatsapp-float {
+                width: 56px;
+                height: 56px;
+                font-size: 1.8rem;
+                bottom: 20px;
+                right: 20px;
+            }
         }
         @media (min-width: 800px) {
             .container {
@@ -544,6 +659,10 @@
             }
             .localizacao .map-image img {
                 max-height: 400px;
+            }
+            .whatsapp-float {
+                bottom: 36px;
+                right: 36px;
             }
         }
 
@@ -704,6 +823,17 @@
         </footer>
     </div>
 
+    <!-- ===== BOTÃO FLUTUANTE WHATSAPP (FAB) ===== -->
+    <button class="whatsapp-float" id="whatsappFloat" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </button>
+
+    <!-- ===== OVERLAY DE CARREGAMENTO ===== -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="texto-loading"><i class="fab fa-whatsapp"></i> Abrindo WhatsApp...</div>
+    </div>
+
     <!-- ===== SCRIPTS ===== -->
     <script>
         (function() {
@@ -786,7 +916,22 @@
                 box.scrollIntoView({ behavior: 'smooth', block: 'center' });
             };
 
-            // --- ENVIAR VIA WHATSAPP ---
+            // --- FUNÇÃO PARA ABRIR WHATSAPP COM OVERLAY ---
+            function abrirWhatsappComOverlay(url) {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.classList.add('active');
+
+                // Abre o WhatsApp após um pequeno delay para exibir o loading
+                setTimeout(function() {
+                    window.open(url, '_blank');
+                    // Esconde o overlay após 2 segundos (tempo para o app abrir)
+                    setTimeout(function() {
+                        overlay.classList.remove('active');
+                    }, 2000);
+                }, 600);
+            }
+
+            // --- ENVIAR VIA WHATSAPP (botão dentro da mensagem) ---
             window.enviarWhatsApp = function() {
                 if (!mensagemPronta) {
                     alert('Primeiro gere a mensagem clicando em "Gerar mensagem com horários disponíveis".');
@@ -794,14 +939,23 @@
                 }
                 const telefone = '5531971610993';
                 const texto = encodeURIComponent(mensagemPronta);
-                window.open('https://wa.me/' + telefone + '?text=' + texto, '_blank');
+                const url = 'https://wa.me/' + telefone + '?text=' + texto;
+                abrirWhatsappComOverlay(url);
             };
 
-            // --- ABRIR WHATSAPP PELO ÍCONE DO RODAPÉ ---
-            window.abrirWhatsApp = function() {
+            // --- ABRIR WHATSAPP PELO ÍCONE DO RODAPÉ E PELO BOTÃO FLUTUANTE ---
+            window.abrirWhatsApp = function(e) {
+                if (e) e.preventDefault();
                 const telefone = '5531971610993';
-                window.open('https://wa.me/' + telefone, '_blank');
+                const url = 'https://wa.me/' + telefone;
+                abrirWhatsappComOverlay(url);
             };
+
+            // --- CLIQUE NO BOTÃO FLUTUANTE ---
+            document.getElementById('whatsappFloat').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.abrirWhatsApp(e);
+            });
 
             // --- SCROLL SUAVE PARA ÂNCORAS ---
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -816,7 +970,7 @@
                 });
             });
 
-            console.log('🚗 Lava Jato do Fred – Agendamento com imagem e referência.');
+            console.log('🚗 Lava Jato do Fred – Agendamento com WhatsApp flutuante e loading.');
         })();
     </script>
 </body>
