@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>Lava Jato do Fred – Agendamento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ========== RESET E TEMA DARK ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+
+        :root {
+            --bg: #0b0e14;
+            --bg-card: #141c28;
+            --bg-input: #1e2a38;
+            --border: #2a3a4a;
+            --text: #eef3fa;
+            --text-muted: #9ab0c7;
+            --blue: #4a9eff;
+            --blue-dark: #1a6da3;
+            --gold: #f5b041;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            --radius: 16px;
+            --transition: 0.3s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 30px;
+        }
+
+        .container {
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--blue);
+        }
+        .logo h1 span {
+            color: var(--gold);
+        }
+        .logo .slogan {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: var(--bg-card);
+            padding: 2px 14px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .menu-toggle:hover {
+            color: var(--blue);
+            transform: rotate(90deg);
+        }
+
+        /* ========== NAV MOBILE ========== */
+        .nav-mobile {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+        .nav-mobile.open {
+            max-height: 400px;
+            opacity: 1;
+            padding: 16px 14px;
+        }
+        .nav-mobile ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .nav-mobile ul li a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .nav-mobile ul li a i {
+            color: var(--blue);
+            width: 24px;
+        }
+        .nav-mobile ul li a:hover {
+            border-color: var(--blue);
+            background: var(--bg-card);
+            transform: translateX(4px);
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 32px 24px;
+            text-align: center;
+            border: 1px solid var(--border);
+            margin-bottom: 28px;
+            animation: floatGlow 4s ease-in-out infinite;
+        }
+        @keyframes floatGlow {
+            0% { box-shadow: 0 0 0 0 rgba(74, 158, 255, 0.15); }
+            50% { box-shadow: 0 0 30px 8px rgba(74, 158, 255, 0.05); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 158, 255, 0.15); }
+        }
+        .hero h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+        .hero h2 span {
+            color: var(--gold);
+        }
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        .btn-hero {
+            background: linear-gradient(135deg, var(--blue-dark), #0d3b6e);
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(26, 109, 163, 0.4);
+        }
+        .btn-hero:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(26, 109, 163, 0.6);
+        }
+
+        /* ========== SERVIÇOS ========== */
+        .servicos {
+            margin-bottom: 28px;
+        }
+        .servicos h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .servicos h3 i {
+            color: var(--gold);
+        }
+        .grid-servicos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .servico-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px 10px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .servico-card:hover {
+            border-color: var(--blue);
+            transform: translateY(-4px);
+            background: var(--bg-input);
+        }
+        .servico-card .icon {
+            font-size: 2rem;
+            color: var(--blue);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .servico-card h5 {
+            font-size: 0.95rem;
+        }
+        .servico-card .desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* ========== AGENDAMENTO ========== */
+        .agendamento {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 28px;
+        }
+        .agendamento h3 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .agendamento h3 i {
+            color: var(--gold);
+        }
+
+        .campo {
+            margin-bottom: 16px;
+        }
+        .campo label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .campo input {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+        }
+        .campo input:focus {
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.15);
+        }
+        .campo input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8);
+            cursor: pointer;
+        }
+
+        .btn-gerar {
+            width: 100%;
+            background: linear-gradient(135deg, var(--blue-dark), #0d3b6e);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(26, 109, 163, 0.3);
+        }
+        .btn-gerar:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 28px rgba(26, 109, 163, 0.5);
+        }
+
+        /* ========== MENSAGEM GERADA ========== */
+        .mensagem-box {
+            background: var(--bg-input);
+            border-radius: var(--radius);
+            padding: 18px 16px;
+            border: 1px solid var(--border);
+            margin-top: 20px;
+            display: none;
+            animation: fadeUp 0.5s ease;
+        }
+        .mensagem-box.visible {
+            display: block;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(16px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .mensagem-box .label-msg {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mensagem-box .label-msg i {
+            color: var(--gold);
+        }
+        .mensagem-box .texto-msg {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin: 10px 0 14px;
+            border-left: 4px solid var(--blue);
+            line-height: 1.6;
+            color: var(--text);
+        }
+        .btn-whatsapp {
+            width: 100%;
+            background: #25D366;
+            color: #fff;
+            border: none;
+            padding: 13px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.25);
+        }
+        .btn-whatsapp:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 24px rgba(37, 211, 102, 0.4);
+        }
+
+        /* ========== LOCALIZAÇÃO ========== */
+        .localizacao {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px 18px;
+            border: 1px solid var(--border);
+            margin-bottom: 28px;
+        }
+        .localizacao h3 {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .localizacao h3 i {
+            color: var(--gold);
+        }
+        .localizacao p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .localizacao .endereco {
+            color: var(--text);
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-top: 4px;
+        }
+
+        /* ========== CONTATO RÁPIDO ========== */
+        .contato {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            gap: 12px;
+        }
+        .contato .phone {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .contato .phone i {
+            color: var(--gold);
+            font-size: 1.8rem;
+        }
+        .btn-agendar-rapido {
+            background: linear-gradient(135deg, var(--blue-dark), #0d3b6e);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(26, 109, 163, 0.3);
+        }
+        .btn-agendar-rapido:hover {
+            transform: scale(1.04);
+        }
+
+        /* ========== RODAPÉ ========== */
+        .footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .footer .social {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .footer .social a {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            transition: var(--transition);
+        }
+        .footer .social a:hover {
+            color: var(--blue);
+            transform: translateY(-3px);
+        }
+        .footer .endereco-rodape {
+            font-size: 0.8rem;
+            color: var(--text);
+            margin-top: 4px;
+        }
+
+        /* ========== RESPONSIVO ========== */
+        @media (max-width: 480px) {
+            .hero h2 {
+                font-size: 1.6rem;
+            }
+            .grid-servicos {
+                grid-template-columns: 1fr 1fr;
+            }
+            .contato {
+                flex-direction: column;
+                text-align: center;
+            }
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+        }
+        @media (min-width: 800px) {
+            .container {
+                max-width: 720px;
+            }
+            .hero h2 {
+                font-size: 2.4rem;
+            }
+            .grid-servicos {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* ========== SCROLLBAR ========== */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--blue-dark);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--blue);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <header class="header">
+            <div class="logo">
+                <h1>Lava Jato <span>do Fred</span></h1>
+                <div class="slogan"><i class="fas fa-sparkles" style="color:var(--gold);"></i> Seu carro merece o melhor</div>
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </header>
+
+        <!-- ===== NAV MOBILE ===== -->
+        <nav class="nav-mobile" id="navMobile">
+            <ul>
+                <li><a href="#servicos"><i class="fas fa-list-ul"></i> Serviços</a></li>
+                <li><a href="#agendamento"><i class="fas fa-calendar-check"></i> Agendar</a></li>
+                <li><a href="#localizacao"><i class="fas fa-map-pin"></i> Localização</a></li>
+                <li><a href="#contato"><i class="fas fa-phone-alt"></i> Contato</a></li>
+            </ul>
+        </nav>
+
+        <!-- ===== HERO ===== -->
+        <section class="hero">
+            <h2>Brilho, <span>Proteção</span> e <span>Cuidado</span></h2>
+            <p>Agende seu horário e dê ao seu carro o tratamento premium.</p>
+            <button class="btn-hero" onclick="scrollToAgendamento()">
+                <i class="fas fa-calendar-check"></i> Agendar horário
+            </button>
+        </section>
+
+        <!-- ===== SERVIÇOS ===== -->
+        <section class="servicos" id="servicos">
+            <h3><i class="fas fa-car-side"></i> Nossos serviços</h3>
+            <div class="grid-servicos">
+                <div class="servico-card">
+                    <span class="icon"><i class="fas fa-soap"></i></span>
+                    <h5>Lavagem Tradicional</h5>
+                    <div class="desc">Limpeza completa</div>
+                </div>
+                <div class="servico-card">
+                    <span class="icon"><i class="fas fa-spray-can"></i></span>
+                    <h5>Lavagem Completa</h5>
+                    <div class="desc">Cuidado especial</div>
+                </div>
+                <div class="servico-card">
+                    <span class="icon"><i class="fas fa-microscope"></i></span>
+                    <h5>Limpeza Intensa</h5>
+                    <div class="desc">Aromatizante</div>
+                </div>
+                <div class="servico-card">
+                    <span class="icon"><i class="fas fa-wind"></i></span>
+                    <h5>Incensamento</h5>
+                    <div class="desc">Bem-estar</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== AGENDAMENTO ===== -->
+        <section class="agendamento" id="agendamento">
+            <h3><i class="fas fa-calendar-alt"></i> Escolha a data</h3>
+            <form id="formAgendamento" onsubmit="gerarMensagem(event)">
+                <div class="campo">
+                    <label for="nome">Seu nome (opcional)</label>
+                    <input type="text" id="nome" placeholder="Digite seu nome" />
+                </div>
+                <div class="campo">
+                    <label for="data">Data do agendamento</label>
+                    <input type="date" id="data" required />
+                </div>
+                <button type="submit" class="btn-gerar">
+                    <i class="fas fa-paper-plane"></i> Gerar mensagem e agendar
+                </button>
+            </form>
+
+            <!-- Mensagem gerada -->
+            <div class="mensagem-box" id="mensagemBox">
+                <div class="label-msg"><i class="fas fa-comment-dots"></i> Sua mensagem personalizada</div>
+                <div class="texto-msg" id="textoMensagem"></div>
+                <button class="btn-whatsapp" onclick="enviarWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Enviar via WhatsApp
+                </button>
+            </div>
+        </section>
+
+        <!-- ===== LOCALIZAÇÃO ===== -->
+        <section class="localizacao" id="localizacao">
+            <h3><i class="fas fa-map-pin"></i> Onde estamos</h3>
+            <p>Estamos localizados em:</p>
+            <div class="endereco">
+                <i class="fas fa-location-dot" style="color:var(--gold);"></i>
+                Igarapé – MG, Bairro Cidade Nova, Rua Antônio Cândido, s/n
+            </div>
+        </section>
+
+        <!-- ===== CONTATO RÁPIDO ===== -->
+        <div class="contato" id="contato">
+            <div class="phone">
+                <i class="fas fa-phone-alt"></i>
+                <span>(31) 97161-0993</span>
+            </div>
+            <div style="display:flex; gap:12px; color:var(--text-muted); font-size:0.85rem;">
+                <span><i class="fas fa-map-pin" style="color:var(--gold);"></i> Igarapé – MG</span>
+            </div>
+            <button class="btn-agendar-rapido" onclick="scrollToAgendamento()">
+                <i class="fas fa-calendar-check"></i> Agendar
+            </button>
+        </div>
+
+        <!-- ===== RODAPÉ ===== -->
+        <footer class="footer">
+            <div>© 2026 Lava Jato do Fred – Todos os direitos reservados.</div>
+            <div class="social">
+                <a href="https://www.instagram.com/fred_angelo7/" target="_blank" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <!-- WhatsApp sem link específico, apenas ícone (pode ser usado para abrir o WhatsApp) -->
+                <a href="#" onclick="abrirWhatsApp()" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+            <div class="endereco-rodape">
+                <i class="fas fa-map-pin"></i> Igarapé – MG, Bairro Cidade Nova, Rua Antônio Cândido, s/n
+            </div>
+            <small><i class="fas fa-phone"></i> (31) 97161-0993</small>
+        </footer>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // --- MENU MOBILE ---
+            const toggleBtn = document.getElementById('menuToggle');
+            const navMobile = document.getElementById('navMobile');
+            toggleBtn.addEventListener('click', function() {
+                const isOpen = navMobile.classList.toggle('open');
+                this.querySelector('i').className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+            });
+            document.querySelectorAll('.nav-mobile ul li a').forEach(link => {
+                link.addEventListener('click', function() {
+                    navMobile.classList.remove('open');
+                    toggleBtn.querySelector('i').className = 'fas fa-bars';
+                });
+            });
+
+            // --- DATA MÍNIMA (HOJE) ---
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById('data').setAttribute('min', hoje);
+
+            // --- FUNÇÃO PARA ROLAR ATÉ O FORM ---
+            window.scrollToAgendamento = function() {
+                document.getElementById('agendamento').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            };
+
+            // --- VARIÁVEL GLOBAL PARA MENSAGEM ---
+            let mensagemPronta = '';
+
+            // --- GERAR MENSAGEM ---
+            window.gerarMensagem = function(e) {
+                e.preventDefault();
+
+                const nome = document.getElementById('nome').value.trim();
+                const data = document.getElementById('data').value;
+
+                if (!data) {
+                    alert('Por favor, selecione uma data.');
+                    return;
+                }
+
+                // Formatar data
+                const partes = data.split('-');
+                const dataFormatada = partes[2] + '/' + partes[1] + '/' + partes[0];
+
+                // Saudação baseada na hora atual
+                const agora = new Date();
+                const hora = agora.getHours();
+                let saudacao = '';
+                if (hora < 12) saudacao = 'Bom dia';
+                else if (hora < 18) saudacao = 'Boa tarde';
+                else saudacao = 'Boa noite';
+
+                // Construir mensagem (sem horário)
+                let msg = saudacao + '! ';
+                if (nome) msg += 'Meu nome é ' + nome + '. ';
+                msg += 'Gostaria de agendar um horário para o dia ' + dataFormatada + '. ';
+                msg += 'Aguardo a confirmação. Atenciosamente.';
+
+                mensagemPronta = msg;
+
+                // Exibir
+                const box = document.getElementById('mensagemBox');
+                const texto = document.getElementById('textoMensagem');
+                texto.textContent = msg;
+                box.classList.add('visible');
+                box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            };
+
+            // --- ENVIAR VIA WHATSAPP ---
+            window.enviarWhatsApp = function() {
+                if (!mensagemPronta) {
+                    alert('Primeiro gere a mensagem clicando em "Gerar mensagem e agendar".');
+                    return;
+                }
+                const telefone = '5531971610993';
+                const texto = encodeURIComponent(mensagemPronta);
+                window.open('https://wa.me/' + telefone + '?text=' + texto, '_blank');
+            };
+
+            // --- ABRIR WHATSAPP PELO ÍCONE DO RODAPÉ (sem mensagem pré-definida) ---
+            window.abrirWhatsApp = function() {
+                const telefone = '5531971610993';
+                window.open('https://wa.me/' + telefone, '_blank');
+            };
+
+            // --- REDES SOCIAIS (placeholder para o Instagram já tem link) ---
+            // O link do Instagram já está definido no HTML.
+
+            // --- SCROLL SUAVE PARA ÂNCORAS ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            console.log('🚗 Lava Jato do Fred – Agendamento simplificado.');
+        })();
+    </script>
+</body>
+</html>
